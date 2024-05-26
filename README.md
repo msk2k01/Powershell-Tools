@@ -15,9 +15,6 @@ This script locates a downloaded archive of my iCloud Photos camera roll and ext
 
 The passing of each check can be verified by running the script with the -Verbose flag.
 
-## ineed
-This is a helper script used by my other scripts to detect the presence of a given program. Other scripts call this to check for program dependencies.
-
 ## saveme
 This script quickly opens WinMerge for directory comparisons with custom parameters. Notable features include:
 
@@ -46,5 +43,3 @@ This script finds each FLAC or WAV file in a folder and converts them to ALAC wi
 
 # Usage
 I've tried writing these scripts such that most specific folder and file paths are easily user-defined through parameters. However I have not yet tested them on other people's computers, or with different folder structures. Default parameter values are set based on how my personal computer is set up, so others interested in using these scripts may want to change those defaults to something more useful to them.
-
-If downloading any of these scripts for personal use, I recommend also downloading "ineed.ps1" and placing it in the same directory, as it is often used as a external dependency to validate program installs.

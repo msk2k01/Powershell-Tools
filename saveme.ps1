@@ -10,11 +10,12 @@ param (
     [Parameter(mandatory=$false)]
     [string]$InternalCopyName = "Data", # name (NOT drive letter) of left drive
     [string]$ExternalCopyName = "Data-Backup",  # name (NOT drive letter) of right drive
-    [string]$ShortcutsFile = "F:/files/scripts/shortcuts-for-saveme.ps1" # file containing comparison shortcuts
+    [string]$ShortcutsFile = "F:/files/scripts/shortcuts-for-saveme.ps1", # file containing comparison shortcuts
+    [string]$winmergePath = "C:\Program Files\WinMerge\WinMergeU.exe"
 )
 
 # WinMerge dependency check
-Invoke-Expression -Command "$PSScriptRoot/ineed.ps1 `"C:\Program Files\WinMerge\WinMergeU.exe`" "
+if(-Not (Test-Path $winmergePath)) { throw "64-bit WinMerge install not found." }
 
 # Get the drive letters for the drives to compare between
 [char]$n = (Get-Volume -FriendlyName $InternalCopyName -ErrorAction Stop).DriveLetter
@@ -34,7 +35,7 @@ switch ($PSCmdlet.ParameterSetName) {
 
         Add-Content -Path "$log" -Value "$(Get-Date -Format "yyyy-MM-dd HH:mm") on $env:computername...`t$($n):$($folder)`t$($x):$($folder)"
         Write-Verbose "Calling WinMergeU with arguments $($n):$($folder) and $($x):$($folder)"
-        Start-Process -FilePath "C:\Program Files\WinMerge\WinMergeU.exe" -ArgumentList " `"$($n):$($folder)`" `"$($x):$($folder)`" /r /fl "
+        Start-Process -FilePath $winmergePath -ArgumentList " `"$($n):$($folder)`" `"$($x):$($folder)`" /r /fl "
         break
     }
     "B" {
@@ -52,7 +53,7 @@ switch ($PSCmdlet.ParameterSetName) {
 
         Add-Content -Path "$log" -Value "$(Get-Date -Format "yyyy-MM-dd HH:mm") on $env:computername...`t$($comps[$Shortcut].Left)`t$($comps[$Shortcut].Right)`tFilter: $($comps[$Shortcut].Filters)"
         Write-Verbose "Calling Winmerge with arguments $($comps[$Shortcut].Left) and $($comps[$Shortcut].Right) with filter $($comps[$Shortcut].Filters)"
-        Start-Process -FilePath "C:\Program Files\WinMerge\WinMergeU.exe" -ArgumentList " `"$($comps[$Shortcut].Left)`" `"$($comps[$Shortcut].Right)`" /r /fl /f `"$($comps[$Shortcut].Filters)`" "
+        Start-Process -FilePath $winmergePath -ArgumentList " `"$($comps[$Shortcut].Left)`" `"$($comps[$Shortcut].Right)`" /r /fl /f `"$($comps[$Shortcut].Filters)`" "
         break
     }
 }
