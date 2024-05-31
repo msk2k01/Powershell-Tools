@@ -10,7 +10,7 @@ param (
     [Parameter(mandatory=$false)]
     [string]$InternalCopyName = "Data", # name (NOT drive letter) of left drive
     [string]$ExternalCopyName = "Data-Backup",  # name (NOT drive letter) of right drive
-    [string]$ShortcutsFile = "$PSScriptRoot\saveme-shortcuts.ps1", # file containing comparison shortcuts
+    [string]$ShortcutsFile = "$PSScriptRoot\shortcuts-saveme.ps1", # file containing comparison shortcuts
     [string]$winmergePath = "C:\Program Files\WinMerge\WinMergeU.exe"
 )
 

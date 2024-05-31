@@ -1,5 +1,5 @@
 # Powershell-Tools
-This repository is a showcase of PowerShell scripts I've written that I use on a semi-regular basis. Scripts my be added or removed to this repository based on what I am currently using at the time.
+This repository is a showcase of PowerShell scripts I've written that I use on a semi-regular basis. Scripts my be added to or removed from this repository, based on what I am currently using at the time.
 
 # Script Descriptions
 
@@ -18,7 +18,7 @@ The passing of each check can be verified by running the script with the -Verbos
 ## saveme
 This script quickly opens WinMerge for directory comparisons with custom parameters. Notable features include:
 
-1. "Shortcuts" to frequent, more advanced comparisons has been added. By default, shortcuts are imported from a file `saveme-shortcuts.ps1` stored in the same folder as `saveme.ps1`. This file contains an array, `$comps`, which contains a PSCustomObject for each shortcut's parameters. Here is an example of the file's contents:
+1. "Shortcuts" to frequent, more advanced comparisons has been added. By default, shortcuts are imported from a file `shortcuts-saveme.ps1` stored in the same folder as `saveme.ps1`. This file contains an array, `$comps`, which contains a PSCustomObject for each shortcut's parameters. Here is an example of the file's contents:
     ```powershell
     $comps = @(
         [PSCustomObject]@{
