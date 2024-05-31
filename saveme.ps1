@@ -1,10 +1,10 @@
 [CmdletBinding()]
 param (
     # Script must be called with either a specified $Directory (parameter set A) or with $Shortcut (set B). Otherwise the script will not be executed.
-    [Parameter(mandatory=$true, ParameterSetName="A")] 
+    [Parameter(mandatory=$true, ParameterSetName="D")] 
     [string]$Directory,
 
-    [Parameter(mandatory=$true, ParameterSetName="B")]
+    [Parameter(mandatory=$true, ParameterSetName="S")]
     [int]$Shortcut, 
     
     [Parameter(mandatory=$false)]
@@ -27,7 +27,7 @@ Write-Verbose "$ExternalCopyName drive's DriveLetter detected as $x."
 $log = "$($x):\saveme-log.txt"
 
 switch ($PSCmdlet.ParameterSetName) {
-    "A" {
+    "D" {
         Write-Verbose "Entering execution path A (DIRECTORY compare using given argument $Directory)"
         
         $folder = Split-Path (Convert-Path $Directory -ErrorAction Stop) -NoQualifier
@@ -38,7 +38,7 @@ switch ($PSCmdlet.ParameterSetName) {
         Start-Process -FilePath $winmergePath -ArgumentList " `"$($n):$($folder)`" `"$($x):$($folder)`" /r /fl "
         break
     }
-    "B" {
+    "S" {
         Write-Verbose "Entering execution path B (SHORTCUT)"
 
         # import shortcuts. to make the code more modular, shortucts are defined in a separate file. This defines $comps into this script

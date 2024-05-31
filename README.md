@@ -1,5 +1,5 @@
 # Powershell-Tools
-This repository is a showcase of PowerShell scripts I've written that I use on a semi-regular basis. Scripts my be added to or removed from this repository, based on what I am currently using at the time.
+This repository is a showcase of PowerShell scripts I've written that I use on a semi-regular basis. Scripts my be added to or removed from this repository, based on what I'm currently using at the time.
 
 # Script Descriptions
 
@@ -11,38 +11,47 @@ This script locates a downloaded archive of my iCloud Photos camera roll and ext
 
 1. Verifying the existence of both the expected source archive, and the intended extraction destination.
 2. Extracting to a "temporary" folder before moving each item to the intended destination. A check for old temporary folders is also done.
-3. Verifying that the date of the source archive matches todays date. This is for cases when old `iCloud Photos.zip` archives are left in the downloads folder, and the new one gets a different name (such as `iCloud Photos(1).zip`). A warning is shown if the dates do not match, which likely suggest it's about to operate on an unintended archive.
+3. Verifying that the date of the source archive matches the current date. This is for cases when old `iCloud Photos.zip` archives are left in the downloads folder, and the new one gets a different name (such as `iCloud Photos(1).zip`). A warning is shown if the dates do not match (which usually suggests it's about to operate on an unintended archive).
 
 The passing of each check can be verified by running the script with the -Verbose flag.
 
 ## saveme
-This script quickly opens WinMerge for directory comparisons with custom parameters. Notable features include:
+This script quickly opens WinMerge for directory comparisons with custom parameters. Two modes of execution have been implemented and are detailed below.
 
-1. "Shortcuts" to frequent, more advanced comparisons has been added. By default, shortcuts are imported from a file `shortcuts-saveme.ps1` stored in the same folder as `saveme.ps1`. This file contains an array, `$comps`, which contains a PSCustomObject for each shortcut's parameters. Here is an example of the file's contents:
-    ```powershell
-    $comps = @(
-        [PSCustomObject]@{
-            Label = "Documents (Backlog Excluded)"  # description
-            Left = "$($n):\files\documents" # directory to show on left side in WinMerge
-            Right = "$($x):\files\documents"    # directory to show on right side in WinMerge
-            Filters = "!_backlog\"  # search filters used by WinMerge
-        },
-        # ...and so on for each shortcut
-    )
-    ```
-    Initiating a comparison via a shortcut is mutually exclusive to using a directory path, enforced using Powershell parameter sets.
-    
-    In defining shortcut paths, one can use `$($n)` to refer to the drive letter of the internal drive, and `$($x)` for the drive letter of the external drive. This is the same syntax used by the script.
+### "Directory" Mode
+"Directory" mode compares two folders with identical folder paths, except for the drive letter. (This mode is used most often, as I use this script to manage a mirror copy of my computer's data drive.)
 
-2. The derivations of the two drives in which directories to compare are stored is more standardized than in earlier versions of this script that I wrote. For both drives, the script derives the drive letter from the drive's friendly name. The friendly names can be passed as parameters.
+### "Shortcut" Mode 
+"Shortcut" mode is used for more advanced comparisons, such as those with file type or subfolder filters, and comparisons between folders without identical paths. 
 
-3. Error catching practice/exploring: Several practices have been employed to avoid unwanted behavior:
-    * Extensive usage of Verbose output for debugging purposes
-    * Passing `-ErrorAction Stop` to cmdlets called, such that any errors terminate execution
-    * Explicitly typecasting the internal and external drive letters to chars
-        * The script will refuse to operate unless an external drive (with friendly name `$ExternalCopyName`) is connected, even if the comparison to make does not utilize the external drive. This is intentional behavior and serves as a reminder to plug in an external drive. (As whenever this script is utilized, the backup drive should be involved at some point.)
-    * using `throw` to produce errors instead of `Write-Error` (`throw` produces terminating errors, which halts execution)
-    * Calling WinMerge with `Start-Process` instead of adding it to path and calling directly (allows for better control flow using `-Wait` flag)
+By default, shortcuts are stored in the same folder as the script, in a file named `shortcuts-saveme.ps1`. This file contains a `$comps` array which stores each shortcut as a PSCustomObject. The script imports `$comps` during execution and reads the shortcuts from it.
+
+Since it isn't included in the repository, here's an example of what `shortcuts-saveme.ps1` looks like with a sample shortcut:
+
+```powershell
+$comps = @(
+    [PSCustomObject]@{
+        Label = "Documents (Backlog Excluded)"  # description
+        Left = "$($env:userprofile)\documents" # directory to show on left side in WinMerge
+        Right = "$($x):\files\documents"    # directory to show on right side in WinMerge
+        Filters = "!_backlog\"  # search filters used by WinMerge
+    },
+    # ...repeat for each shortcut
+)
+```
+
+In defining shortcut paths, one can use `$($n)` to refer to the drive letter of the internal drive, and `$($x)` for the drive letter of the external drive. (This is the same syntax that's used by the script.)
+
+Shortcuts are called by passing their index in the `$comps` array to the `-Shortcut` parameter at runtime. The indexes can be listed by passing an invalid index (ex. a very large number).
+
+### Safegaurds
+Several safe coding practices have been employed to avoid unwanted behavior:
+* Extensive usage of Verbose output for debugging purposes
+* Passing `-ErrorAction Stop` to some cmdlets called, such that any errors terminate execution
+* Explicitly typecasting the internal and external drive letters to chars
+* The script will not run if an external drive (whose friendly name matches `$ExternalCopyName`) is not detected, even if the comparison to make does not utilize it. This is intentional and serves as a reminder to back up the data being operated on.
+* using `throw` to produce terminating errors (as opposed to `Write-Error`, which throws non-terminating errors)
+* Logging all comparisons made in a text file
 
 ## turnTheseIntoALAC
 This script finds each FLAC or WAV file in a folder and converts them to ALAC with ffmpeg.
