@@ -18,16 +18,21 @@ The passing of each check can be verified by running the script with the -Verbos
 ## saveme
 This script quickly opens WinMerge for directory comparisons with custom parameters. Notable features include:
 
-1. "Shortcuts" to frequent, more advanced comparisons has been added. Initiating a comparison via a shortcut is mutually exclusive to using a directory path, enforced using Powershell parameter sets. For modularity, these are defined in a separate .ps1 file and stored in `$comps`. Here is an example shortcut entry:
+1. "Shortcuts" to frequent, more advanced comparisons has been added. By default, shortcuts are imported from a file `saveme-shortcuts.ps1` stored in the same folder as `saveme.ps1`. This file contains an array, `$comps`, which contains a PSCustomObject for each shortcut's parameters. Here is an example of the file's contents:
     ```powershell
-    [PSCustomObject]@{
-            Index = "" # filled in automatically for displaying list in terminal
+    $comps = @(
+        [PSCustomObject]@{
             Label = "Documents (Backlog Excluded)"  # description
             Left = "$($n):\files\documents" # directory to show on left side in WinMerge
             Right = "$($x):\files\documents"    # directory to show on right side in WinMerge
             Filters = "!_backlog\"  # search filters used by WinMerge
         },
+        # ...and so on for each shortcut
+    )
     ```
+    Initiating a comparison via a shortcut is mutually exclusive to using a directory path, enforced using Powershell parameter sets.
+    
+    In defining shortcut paths, one can use `$($n)` to refer to the drive letter of the internal drive, and `$($x)` for the drive letter of the external drive. This is the same syntax used by the script.
 
 2. The derivations of the two drives in which directories to compare are stored is more standardized than in earlier versions of this script that I wrote. For both drives, the script derives the drive letter from the drive's friendly name. The friendly names can be passed as parameters.
 
@@ -35,6 +40,7 @@ This script quickly opens WinMerge for directory comparisons with custom paramet
     * Extensive usage of Verbose output for debugging purposes
     * Passing `-ErrorAction Stop` to cmdlets called, such that any errors terminate execution
     * Explicitly typecasting the internal and external drive letters to chars
+        * The script will refuse to operate unless an external drive (with friendly name `$ExternalCopyName`) is connected, even if the comparison to make does not utilize the external drive. This is intentional behavior and serves as a reminder to plug in an external drive. (As whenever this script is utilized, the backup drive should be involved at some point.)
     * using `throw` to produce errors instead of `Write-Error` (`throw` produces terminating errors, which halts execution)
     * Calling WinMerge with `Start-Process` instead of adding it to path and calling directly (allows for better control flow using `-Wait` flag)
 

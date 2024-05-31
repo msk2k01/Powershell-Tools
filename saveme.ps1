@@ -10,7 +10,7 @@ param (
     [Parameter(mandatory=$false)]
     [string]$InternalCopyName = "Data", # name (NOT drive letter) of left drive
     [string]$ExternalCopyName = "Data-Backup",  # name (NOT drive letter) of right drive
-    [string]$ShortcutsFile = "F:/files/scripts/shortcuts-for-saveme.ps1", # file containing comparison shortcuts
+    [string]$ShortcutsFile = "$PSScriptRoot\saveme-shortcuts.ps1", # file containing comparison shortcuts
     [string]$winmergePath = "C:\Program Files\WinMerge\WinMergeU.exe"
 )
 
@@ -46,8 +46,16 @@ switch ($PSCmdlet.ParameterSetName) {
         if(Test-Path "$ShortcutsFile") { . "$ShortcutsFile" }
         else { throw "$ShortcutsFile could not be found." }
 
-        if($Shortcut -gt $comps.length) { # if an invalid (too big) index is passed
-            $comps | Format-Table
+        if(-Not($Shortcut -In 0..($comps.length-1))) { # if an invalid index is passed
+            
+            # generate table of shortcuts
+            $index = 0
+            foreach($i in $comps) {
+                Add-Member -InputObject $i -MemberType NoteProperty -Name "Index" -Value $index
+                $index += 1
+            }
+
+            $comps | Format-Table -Property Index, Label, Left, Right, Filters
             throw "Comparison index out of range. See above table for valid comparisons."
         }
 
