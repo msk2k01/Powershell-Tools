@@ -15,6 +15,11 @@ This script locates a downloaded archive of my iCloud Photos camera roll and ext
 
 The passing of each check can be verified by running the script with the -Verbose flag.
 
+## makeAudioInto
+An interface to easily convert music files between ALAC and FLAC formats using ffmpeg. Both formats are lossless, so no fidelity is lost between conversions. Most metadata, including album art, is preserved in the conversion. The mode of conversion is specified by passing either the `-appleLAC` or `-freeLAC` parameter at runtime. For instance, `makeAudioInto.ps1 -appleLAC` will find all .flac files in the current folder (and any subdirectories) and convert them to ALAC format.
+
+This script replaced an older variant, which only converted files into ALAC. It also introduces a confirmation prompt which reminds the user that the old files will be deleted before continuing. The old version required the user to manually authorize the deletion of each old file.
+
 ## saveme
 This script quickly opens WinMerge for directory comparisons with custom parameters. Two modes of execution have been implemented and are detailed below.
 
@@ -52,9 +57,6 @@ Several safe coding practices have been employed to avoid unwanted behavior:
 * The script will not run if an external drive (whose friendly name matches `$ExternalCopyName`) is not detected, even if the comparison to make does not utilize it. This is intentional and serves as a reminder to back up the data being operated on.
 * using `throw` to produce terminating errors (as opposed to `Write-Error`, which throws non-terminating errors)
 * Logging all comparisons made in a text file
-
-## turnTheseIntoALAC
-This script finds each FLAC or WAV file in a folder and converts them to ALAC with ffmpeg.
 
 # Usage
 I've tried writing these scripts such that most specific folder and file paths are easily user-defined through parameters. However I have not yet tested them on other people's computers, or with different folder structures. Default parameter values are set based on how my personal computer is set up, so others interested in using these scripts may want to change those defaults to something more useful to them.
