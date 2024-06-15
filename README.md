@@ -42,7 +42,7 @@ $comps = @(
 
 In defining shortcut paths, one can use `$($n)` to refer to the drive letter of the internal drive, and `$($x)` for the drive letter of the external drive. (This is the same syntax that's used by the script.)
 
-Shortcuts are called by passing their index in the `$comps` array to the `-Shortcut` parameter at runtime. The indexes can be listed by passing an invalid index (ex. a very large number).
+When the `-Shortcut` switch is passed at runtime, a menu is displayed of all shortcuts from which the user can select.
 
 ### Safegaurds
 Several safe coding practices have been employed to avoid unwanted behavior:

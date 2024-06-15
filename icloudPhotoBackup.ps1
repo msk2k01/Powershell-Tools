@@ -3,7 +3,7 @@ param (
     [Parameter(mandatory=$false)]
     [string]$Source = "$env:userprofile\Downloads\iCloud Photos.zip",                                                                   # path of expected zip of icloud download
     [string]$InternalDriveName = "Data",                                                                                                # name (NOT drive letter) of photos directory (used for $Destination below)
-    [string]$Destination = "$((Get-Volume -FriendlyName "$InternalDriveName" -ErrorAction Stop).DriveLetter):\files\camera-roll\2024"   # where to store the extracted photos
+    [string]$Destination = "$((Get-Volume -FriendlyName "$InternalDriveName" -ErrorAction Stop).DriveLetter):\photos\2024"              # where to store the extracted photos
 )
 Write-Verbose "Using source archive $Source and destination folder $Destination"
 

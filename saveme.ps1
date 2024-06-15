@@ -5,7 +5,7 @@ param (
     [string]$Directory,
 
     [Parameter(mandatory=$true, ParameterSetName="S")]
-    [int]$Shortcut, 
+    [switch]$Shortcut, 
     
     [Parameter(mandatory=$false)]
     [string]$InternalCopyName = "Data", # name (NOT drive letter) of left drive
@@ -28,7 +28,7 @@ $log = "$($x):\saveme-log.txt"
 
 switch ($PSCmdlet.ParameterSetName) {
     "D" {
-        Write-Verbose "Entering execution path A (DIRECTORY compare using given argument $Directory)"
+        Write-Verbose "Entering execution path D (DIRECTORY compare using given argument $Directory)"
         
         $folder = Split-Path (Convert-Path $Directory -ErrorAction Stop) -NoQualifier
         Write-Verbose "Directory to compare parsed as $folder"
@@ -39,29 +39,30 @@ switch ($PSCmdlet.ParameterSetName) {
         break
     }
     "S" {
-        Write-Verbose "Entering execution path B (SHORTCUT)"
+        Write-Verbose "Entering execution path S (SHORTCUT)"
 
         # import shortcuts. to make the code more modular, shortucts are defined in a separate file. This defines $comps into this script
         Write-Verbose "Attempting to import shortcuts from $ShortcutsFile"
         if(Test-Path "$ShortcutsFile") { . "$ShortcutsFile" }
         else { throw "$ShortcutsFile could not be found." }
 
-        if(-Not($Shortcut -In 0..($comps.length-1))) { # if an invalid index is passed
-            
-            # generate table of shortcuts
-            $index = 0
-            foreach($i in $comps) {
-                Add-Member -InputObject $i -MemberType NoteProperty -Name "Index" -Value $index
-                $index += 1
-            }
+        # generate and display table of shortcuts
+        $index = 0
+        foreach($i in $comps) {
+            Add-Member -InputObject $i -MemberType NoteProperty -Name "Index" -Value $index
+            $index += 1
+        }
+        $comps | Format-Table -Property Index, Label, Left, Right, Filters
 
-            $comps | Format-Table -Property Index, Label, Left, Right, Filters
-            throw "Comparison index out of range. See above table for valid comparisons."
+        while($True) {
+            [int]$pick = Read-Host "Select a shortcut by index to execute"
+            if($pick -In 0..($comps.length-1)) { break; }
+            else {Write-Error "Invalid index passed."; continue}
         }
 
-        Add-Content -Path "$log" -Value "$(Get-Date -Format "yyyy-MM-dd HH:mm") on $env:computername...`t$($comps[$Shortcut].Left)`t$($comps[$Shortcut].Right)`tFilter: $($comps[$Shortcut].Filters)"
-        Write-Verbose "Calling Winmerge with arguments $($comps[$Shortcut].Left) and $($comps[$Shortcut].Right) with filter $($comps[$Shortcut].Filters)"
-        Start-Process -FilePath $winmergePath -ArgumentList " `"$($comps[$Shortcut].Left)`" `"$($comps[$Shortcut].Right)`" /r /fl /f `"$($comps[$Shortcut].Filters)`" "
+        Add-Content -Path "$log" -Value "$(Get-Date -Format "yyyy-MM-dd HH:mm") on $env:computername...`t$($comps[$pick].Left)`t$($comps[$pick].Right)`tFilter: $($comps[$pick].Filters)"
+        Write-Verbose "Calling Winmerge with arguments $($comps[$pick].Left) and $($comps[$pick].Right) with filter $($comps[$pick].Filters)"
+        Start-Process -FilePath $winmergePath -ArgumentList " `"$($comps[$pick].Left)`" `"$($comps[$pick].Right)`" /r /fl /f `"$($comps[$pick].Filters)`" "
         break
     }
 }
