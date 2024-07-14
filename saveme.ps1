@@ -69,5 +69,3 @@ switch ($PSCmdlet.ParameterSetName) {
 
 Write-Verbose "End of script reached. Exiting"
 exit
-
-# test edit for test commit

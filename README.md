@@ -4,9 +4,11 @@ This repository is a showcase of PowerShell scripts I've written that I use on a
 # Script Descriptions
 
 ## amuseme
-This script picks a random video within a folder (including its subfolders) and opens it with VLC. I use this to pick random episodes from my large library of TV show DVD rips.
+This script picks a random video within a folder (including its subfolders) and opens it with VLC.
 
 ## icloudPhotoBackup
+**Note: This script is no longer being actively maintained or tested.**
+
 This script locates a downloaded archive of my iCloud Photos camera roll and extracts it into my folder structure for photo backups. It is designed to be very safe by performing a number of checks beforehand:
 
 1. Verifying the existence of both the expected source archive, and the intended extraction destination.
