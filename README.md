@@ -1,7 +1,4 @@
 # Powershell-Tools
-This repository is a showcase of PowerShell scripts I've written that I use on a semi-regular basis. Scripts my be added to or removed from this repository, based on what I'm currently using at the time.
-
-# Script Descriptions
 
 ## amuseme
 This script picks a random video within a folder (including its subfolders) and opens it with VLC.
@@ -23,35 +20,8 @@ An interface to easily convert music files between ALAC and FLAC formats using f
 This script replaced an older variant, which only converted files into ALAC. It also introduces a confirmation prompt which reminds the user that the old files will be deleted before continuing. The old version required the user to manually authorize the deletion of each old file.
 
 ## saveme
-This script quickly opens WinMerge for directory comparisons with custom parameters. Two modes of execution have been implemented and are detailed below.
+This script quickly opens WinMerge for directory comparisons with custom parameters. It compares two folders with identical folder paths, except for the drive letter. 
 
-### "Directory" Mode
-"Directory" mode compares two folders with identical folder paths, except for the drive letter. (This mode is used most often, as I use this script to manage a mirror copy of my computer's data drive.)
-
-### "Shortcut" Mode 
-"Shortcut" mode is used for more advanced comparisons, such as those with file type or subfolder filters, and comparisons between folders without identical paths. 
-
-By default, shortcuts are stored in the same folder as the script, in a file named `shortcuts-saveme.ps1`. This file contains a `$comps` array which stores each shortcut as a PSCustomObject. The script imports `$comps` during execution and reads the shortcuts from it.
-
-Since it isn't included in the repository, here's an example of what `shortcuts-saveme.ps1` looks like with a sample shortcut:
-
-```powershell
-$comps = @(
-    [PSCustomObject]@{
-        Label = "Documents (Backlog Excluded)"  # description
-        Left = "$($env:userprofile)\documents" # directory to show on left side in WinMerge
-        Right = "$($x):\files\documents"    # directory to show on right side in WinMerge
-        Filters = "!_backlog\"  # search filters used by WinMerge
-    },
-    # ...repeat for each shortcut
-)
-```
-
-In defining shortcut paths, one can use `$($n)` to refer to the drive letter of the internal drive, and `$($x)` for the drive letter of the external drive. (This is the same syntax that's used by the script.)
-
-When the `-Shortcut` switch is passed at runtime, a menu is displayed of all shortcuts from which the user can select.
-
-### Safegaurds
 Several safe coding practices have been employed to avoid unwanted behavior:
 * Extensive usage of Verbose output for debugging purposes
 * Passing `-ErrorAction Stop` to some cmdlets called, such that any errors terminate execution

@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param (
     [Parameter(mandatory=$false)]
-    [string]$ffmpegPath = "F:\software\ffmpeg.exe",
+    [string]$ffmpegPath = "F:\software\ffmpeg-7.0.2-essentials_build\bin\ffmpeg.exe",
     
     [Parameter(mandatory=$true, ParameterSetName="A")] [switch]$appleLAC,
     [Parameter(mandatory=$true, ParameterSetName="F")] [switch]$freeLAC
@@ -24,7 +24,7 @@ switch ($PSCmdlet.ParameterSetName) {
     }
 }
 
-$allhits
+($allhits).fullname
 Write-Warning "Proceeding will delete ALL files in the list above, and replace them with $ext equivalents." -WarningAction Inquire
 
 foreach($i in $allhits) {
